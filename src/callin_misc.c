@@ -79,6 +79,7 @@ int main(int argc, char * argv[])
   callin_function_call1();
   callin_function_call1a();
   callin_function_call2();
+  callin_function_callout();
   callin_routine_geterrorinfo();
   callin_classmethod_call1();
   callin_classmethod_call2();

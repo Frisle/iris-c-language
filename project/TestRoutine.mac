@@ -27,3 +27,9 @@ ErrorEntry() public  {
 	Set a=1/0
 	Quit
 }
+
+EntryCallOut(int1,int2) public  {
+	Set ^calltest(4)=$ZDATETIME($H)_";"_int1_";"_int2
+	Set answer=$ZF(-3,"/home/irisowner/src/callout.so","AddIntSave",int1,int2)
+	Quit answer
+}

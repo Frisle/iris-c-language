@@ -149,6 +149,57 @@ int callin_function_call2()
   return 0;
 }
 
+int callin_function_callout()
+{
+  int	rc= 0;
+  int rtnflags;
+  char *str="my ascii string data";
+  int numargs=0;
+  Callin_char_t *routinename="";
+  Callin_char_t *entryname="";
+  
+  printf("========= Calling callin_function_callout\n");
+  // Set tSC=EntryCallOut^TestRoutine(int,int) 
+  // Function spec
+  //   Accept two params: two integers
+  //   Return integer 
+  //
+  // This entry uses callout(AddIntSave) to add given two integers and return it.
+  // This callout also calls back into IRIS again and set a global. 
+  // try this after running ./callin_misc
+  // DEMO> zw ^callout
+  // ^callout(1)=13   <=== 5+8
+  // So it is calling ... 
+  // c-language-app(callin_misc) -[use callin]-> IRIS -[use callout]-> c-language-library(callout.so) -[use callin]-> IRIS 
+
+  routinename="TestRoutine";
+  entryname="EntryCallOut";
+  numargs=0;
+  rc = IRISPUSHFUNC(&rtnflags, strlen(entryname), entryname, strlen(routinename), routinename); 
+  printf("IRISPUSHRTN rc:%d\n",rc);
+
+  rc = IRISPUSHINT(5);
+  printf("IRISPUSHINT rc:%d\n",rc);
+  RETURNIFERROR(rc)
+  numargs++;
+
+  rc = IRISPUSHINT(8);
+  printf("IRISPUSHINT rc:%d\n",rc);
+  RETURNIFERROR(rc)
+  numargs++;
+
+  rc = IRISEXTFUN(rtnflags,numargs);
+  printf("IRISEXTFUN rc:%d\n",rc);
+  RETURNIFERROR(rc)
+
+  int retval;
+  rc = IRISPOPINT(&retval);
+  printf("IRISPOPINT rc:%d\n",rc);
+  printf("return value as INT4 :%d\n",retval);
+
+  return 0;
+}
+
 // Almost identical to callin_routine_call().
 // Example of how to get error info.
 // See iris-callin.h for possible return code values, such as IRIS_ERSYNTAX, from each APIs.
